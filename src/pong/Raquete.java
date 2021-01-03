@@ -5,19 +5,19 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
-class Paddle extends Rectangle{
+class Raquete extends Rectangle{
 	
 	int id;
 
-	int yVelocity;
+	int yVelocidade;
 
-	int speed = 10;
+	int velocidade = 10;
 
 	
 
-	Paddle(int x, int y, int PADDLE_WIDTH, int PADDLE_HEIGHT, int id){
+	Raquete(int x, int y, int RAQUETE_WIDTH, int RAQUETE_HEIGHT, int id){
 
-		super(x,y,PADDLE_WIDTH,PADDLE_HEIGHT);
+		super(x,y,RAQUETE_WIDTH,RAQUETE_HEIGHT);
 
 		this.id=id;
 
@@ -29,23 +29,23 @@ class Paddle extends Rectangle{
 
 		if(id == 1) {
 			if(e.getKeyCode()==KeyEvent.VK_W) {
-				setYDirection(-speed);
+				setYDirection(-velocidade);
 
 			}
 
 			if(e.getKeyCode()==KeyEvent.VK_S) {
-				setYDirection(speed);
+				setYDirection(velocidade);
 
 			}
 		}else {
 
 			if(e.getKeyCode()==KeyEvent.VK_UP) {
-				setYDirection(-speed);
+				setYDirection(-velocidade);
 
 			}
 
 			if(e.getKeyCode()==KeyEvent.VK_DOWN) {
-				setYDirection(speed);
+				setYDirection(velocidade);
 
 			}
 
@@ -95,13 +95,13 @@ class Paddle extends Rectangle{
 
 	public void setYDirection(int yDirection) {
 
-		yVelocity = yDirection;
+		yVelocidade = yDirection;
 
 	}
 
 	public void move() {
 
-		y = y + yVelocity;
+		y = y + yVelocidade;
 
 	}
 

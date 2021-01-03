@@ -15,23 +15,26 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int GAME_WIDTH = 1000;
 	public static final int GAME_HEIGHT = (int)(GAME_WIDTH * (0.555));
 	static final Dimension SCREEN_SIZE = new Dimension(GAME_WIDTH, GAME_HEIGHT);
-	static final int BALL_DIAMETER = 20; 
-	static final int PADDLE_WIDTH = 25;
-	static final int PADDLE_HEIGHT = 100;
-	
+	static final int BOLA_DIAMETRO = 20; 
+	static final int RAQUETE_WIDTH = 25;
+	static final int RAQUETE_HEIGHT = 100;
+	//Thread
 	Thread gameThread;
-	Image image;
+	// Elementos Gráficpos
+	Image imagem;
 	Graphics graphics;
+	// Importe de valor aleatório
 	Random random;
-	Paddle paddle1;
-	Paddle paddle2;
-	Ball ball;
-	Score score;
+	// Elementos do Jogo
+	Raquete raquete1;
+	Raquete raquete2;
+	Bola bola;
+	Pontuacao score;
 	
 	public GamePanel() {
-		newPaddles();
-		newBall();
-		score = new Score(GAME_WIDTH, GAME_HEIGHT );
+		novasRaquetes();
+		novaBola();
+		score = new Pontuacao(GAME_WIDTH, GAME_HEIGHT );
 		this.setFocusable(true);
 		this.addKeyListener(new AL());
 		this.setPreferredSize(SCREEN_SIZE);
@@ -41,64 +44,112 @@ public class GamePanel extends JPanel implements Runnable {
 		
 	}
 	
-	public void newBall() {
+	/*
+	 * Método para invoacação da bola;
+	 * O uso do 'random' gera a bola aleatoriamente na vertical no cento da tela.
+	 */
+	public void novaBola() {
 		random = new Random();
-		ball = new Ball((GAME_WIDTH /2)-(BALL_DIAMETER/2), (GAME_HEIGHT /2) -(BALL_DIAMETER / 2), BALL_DIAMETER, BALL_DIAMETER);
+		bola = new Bola((GAME_WIDTH /2)-(BOLA_DIAMETRO/2), random.nextInt(GAME_HEIGHT-BOLA_DIAMETRO), BOLA_DIAMETRO, BOLA_DIAMETRO); 
+		
 
 	}
 	
-	public void newPaddles() {
-		paddle1 = new Paddle(0, (GAME_HEIGHT/2) -(PADDLE_HEIGHT/2), PADDLE_WIDTH, PADDLE_HEIGHT, 1);
-		paddle2 = new Paddle(GAME_WIDTH-PADDLE_WIDTH, (GAME_HEIGHT/2) -(PADDLE_HEIGHT/2), PADDLE_WIDTH, PADDLE_HEIGHT, 2);		
+	public void novasRaquetes() {
+		raquete1 = new Raquete(0, (GAME_HEIGHT/2) -(RAQUETE_HEIGHT/2), RAQUETE_WIDTH, RAQUETE_HEIGHT, 1);
+		raquete2 = new Raquete(GAME_WIDTH-RAQUETE_WIDTH, (GAME_HEIGHT/2) -(RAQUETE_HEIGHT/2), RAQUETE_WIDTH, RAQUETE_HEIGHT, 2);		
 	}
 	
 	public void paint(Graphics g ){
-		image = createImage(getWidth(), getHeight());
-		graphics = image.getGraphics();
+		imagem = createImage(getWidth(), getHeight());
+		graphics = imagem.getGraphics();
 		draw(graphics);
-		g.drawImage(image,0,0,this);
+		g.drawImage(imagem,0,0,this);
 	}
 	
 	public void draw(Graphics g) {
-		paddle1.draw(g);
-		paddle2.draw(g);
-		ball.draw(g);
+		raquete1.draw(g);
+		raquete2.draw(g);
+		bola.draw(g);
+		score.draw(g);
 		Toolkit.getDefaultToolkit().sync(); 
 	}
 	public void move() {
-		paddle1.move();
-		paddle2.move();
-		ball.move();
+		raquete1.move();
+		raquete2.move();
+		bola.move();
 		
 	}
 	public void checkCollision() {
-		
+			
 		//Colisão da bola nas bordas da tela
-		if(ball.y<=0) {
-			ball.setYDirection(-ball.yVelocity);
+		if(bola.y<=0) {
+			bola.setYDirection(-bola.yVelocidade);
 		}
-		if(ball.y >=GAME_HEIGHT-BALL_DIAMETER) {
-			ball.setYDirection(-ball.yVelocity);
+		if(bola.y >=GAME_HEIGHT-BOLA_DIAMETRO) {
+			bola.setYDirection(-bola.yVelocidade);
 		}
+		
+		// colisão com as raquetes
+		if(bola.intersects(raquete1)) {
+			bola.xVelocidade = Math.abs(bola.xVelocidade);
+			bola.xVelocidade++; // Acrescentando mais velocidade a cada colisão com raquete
+			if(bola.yVelocidade>0) {
+				bola.yVelocidade++;
+			}else {
+				bola.yVelocidade--;
+			}
+			bola.setXDirection(bola.xVelocidade);
+			bola.setYDirection(bola.yVelocidade);
+		}
+		
+		
+		if(bola.intersects(raquete2)) {
+			bola.xVelocidade = Math.abs(bola.xVelocidade);
+			bola.xVelocidade++; // Acrescentando mais velocidade a cada colisão com raquete
+			if(bola.yVelocidade>0) {
+				bola.yVelocidade++;
+			}else {
+				bola.yVelocidade--;
+			}
+			bola.setXDirection(-bola.xVelocidade);
+			bola.setYDirection(bola.yVelocidade);
+		}
+		
+		
 		
 		// Este método previne colisões
-		if(paddle1.y<=0)
+		if(raquete1.y<=0)
 
-			paddle1.y=0;
+			raquete1.y=0;
 
-		if(paddle1.y >= (GAME_HEIGHT-PADDLE_HEIGHT))
+		if(raquete1.y >= (GAME_HEIGHT-RAQUETE_HEIGHT))
 
-			paddle1.y = GAME_HEIGHT-PADDLE_HEIGHT;
+			raquete1.y = GAME_HEIGHT-RAQUETE_HEIGHT;
 
-		if(paddle2.y<=0)
+		if(raquete2.y<=0)
 
-			paddle2.y=0;
+			raquete2.y=0;
 
-		if(paddle2.y >= (GAME_HEIGHT-PADDLE_HEIGHT))
+		if(raquete2.y >= (GAME_HEIGHT-RAQUETE_HEIGHT))
 
-			paddle2.y = GAME_HEIGHT-PADDLE_HEIGHT;
+			raquete2.y = GAME_HEIGHT-RAQUETE_HEIGHT;
 		
-				
+		// Pontuação e Nova Bola no jogo
+		
+		if(bola.x<=0) {
+			score.player2++;
+			novasRaquetes();
+			novaBola();
+
+		}
+		
+		if(bola.x>=GAME_WIDTH-BOLA_DIAMETRO) {
+			score.player1++;
+			novasRaquetes();
+			novaBola();
+		}
+		
 		
 	}
 	public void run() {
@@ -136,8 +187,8 @@ public class GamePanel extends JPanel implements Runnable {
 	public class AL extends KeyAdapter{
 		@Override
 		public void keyPressed(KeyEvent e) {
-			paddle1.keyPressed(e);
-			paddle2.keyPressed(e);
+			raquete1.keyPressed(e);
+			raquete2.keyPressed(e);
 			super.keyPressed(e);
 		}
 		
@@ -145,8 +196,8 @@ public class GamePanel extends JPanel implements Runnable {
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			paddle1.keyReleased(e);
-			paddle2.keyReleased(e);
+			raquete1.keyReleased(e);
+			raquete2.keyReleased(e);
 		
 			super.keyReleased(e);
 		}
