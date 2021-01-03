@@ -1,11 +1,7 @@
 <h1 align="center">Pong - Java Game</h1>
 
-<div align="center">
 
 [![Status](https://img.shields.io/badge/status-arquived-a.svg)]()
-
-
-</div>
 
 ---
 
@@ -21,7 +17,7 @@
 - [Autor](#autor)
 - [Conhecimentos](#conhecimentos)
 
-## :) Sobre <a name = "sobre"></a>
+## Sobre <a name = "sobre"></a>
 
 O Jogo "Pong" foi o primeiro a ser lucrativo na história da indústria de jogos. Criado por Nolan Bushnell e Ted Dabney foi recriado e adpatado por diversas vezes. 
 
